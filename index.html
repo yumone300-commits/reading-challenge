@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="염원 독서">
+<meta name="format-detection" content="telephone=no">
+<title>염원컴퍼니 독서 챌린지 · 인증하기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   🔧 설정 영역: Firebase 를 연결하면 참여자 전원이 데이터를 공유합니다.
+   비워 두면 "체험 모드"(이 브라우저에만 저장)로 동작합니다.
+   ========================================================= */
+</style>
+<script>
+window.FIREBASE_CONFIG = {
+  apiKey: "AIzaSyC66tTdNn5kZXz-WlJG3anqJ-iG5e1v4EE",
+  authDomain: "pilsa-auth.firebaseapp.com",
+  projectId: "pilsa-auth",
+  storageBucket: "pilsa-auth.firebasestorage.app",
+  messagingSenderId: "176933327182",
+  appId: "1:176933327182:web:792480a861f97ec401ce1f"
+};
+</script>
+<style>
+:root{
+  --bg:#0b1020; --bg2:#121a33; --card:#161f3d; --line:#26305a;
+  --text:#eef1fb; --muted:#9aa3c7; --accent:#f5b942; --accent2:#ff7a59;
+  --ok:#3ecf8e; --bad:#ff5d6c; --radius:16px;
+}
+@media (prefers-color-scheme: light){
+  :root{ --bg:#f5f6fb; --bg2:#ffffff; --card:#ffffff; --line:#e2e5f0;
+    --text:#151a2e; --muted:#5f6787; --accent:#d9900b; --accent2:#e8573a; }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 80px}
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hd{max-width:720px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:17px;letter-spacing:-.3px}
+.logo .mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#0b1020;font-weight:900}
+nav{margin-left:auto;display:flex;gap:4px}
+nav a{text-decoration:none;font-size:14px;padding:7px 12px;border-radius:999px;color:var(--muted);font-weight:500}
+nav a.on{background:var(--card);color:var(--text);border:1px solid var(--line)}
+.hero{padding:28px 0 8px}
+.hero h1{font-size:26px;font-weight:900;letter-spacing:-.6px;line-height:1.3}
+.hero p{color:var(--muted);margin-top:6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-top:16px}
+.card h2{font-size:18px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.muted{color:var(--muted);font-size:14px}
+.small{font-size:13px}
+.btn{appearance:none;border:0;cursor:pointer;font:inherit;font-weight:700;border-radius:12px;padding:12px 18px;background:var(--accent);color:#1a1300;transition:transform .1s, opacity .2s}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.sm{padding:7px 12px;font-size:13px;border-radius:10px}
+.btn.full{width:100%;padding:15px;font-size:16px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+label.lb{display:block;font-weight:700;font-size:14px;margin:16px 0 6px}
+input[type=text],input[type=date],input[type=password],input[type=url],textarea,select{width:100%;font:inherit;color:var(--text);background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+textarea{min-height:120px;resize:vertical}
+.toggle{background:none;border:0;color:var(--accent);font:inherit;font-weight:700;cursor:pointer;padding:0;margin-top:10px}
+.banner{background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 22%,var(--card)),var(--card));}
+.banner .row a{text-decoration:none}
+.count{font-size:30px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--accent);letter-spacing:1px}
+.rules li{margin:6px 0 6px 18px;font-size:14px;color:var(--muted)}
+.today{font-size:17px;font-weight:700;margin-top:4px}
+.combo{position:relative}
+.combo ul{position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--bg2);border:1px solid var(--line);border-radius:12px;max-height:240px;overflow:auto;list-style:none;z-index:30;display:none;box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.combo ul.open{display:block}
+.combo li{padding:11px 14px;cursor:pointer}
+.combo li:hover,.combo li.act{background:color-mix(in srgb,var(--accent) 18%,transparent)}
+.post{border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:12px;background:var(--bg2)}
+.post .ph{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.post .nm{font-weight:700;cursor:pointer}
+.post .nm:hover{color:var(--accent)}
+.tag{font-size:12px;padding:2px 8px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--muted)}
+.tag.late{color:var(--bad);border-color:var(--bad)}
+.tag.ok{color:var(--ok);border-color:var(--ok)}
+.post h4{font-size:13px;color:var(--accent);margin:12px 0 2px}
+.post p{white-space:pre-wrap;word-break:break-word;font-size:15px}
+.post .clip{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.post .ft{display:flex;gap:8px;margin-top:12px;align-items:center}
+.like.on{background:var(--accent);color:#1a1300;border-color:var(--accent)}
+.empty{text-align:center;color:var(--muted);padding:28px 0}
+.fame li{list-style:none;display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)}
+.fame .rk{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:900;background:var(--bg2);border:1px solid var(--line)}
+.fame li:nth-child(1) .rk{background:var(--accent);color:#1a1300;border:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.stat{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.stat b{display:block;font-size:22px;font-weight:900}
+.grid28{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:14px}
+.cell{aspect-ratio:1;border-radius:8px;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--bg2);border:1px solid var(--line);color:var(--muted)}
+.cell.ok{background:var(--ok);color:#06251a;border:0}
+.cell.late{background:var(--bad);color:#fff;border:0}
+.cell.miss{background:color-mix(in srgb,var(--bad) 25%,var(--bg2));color:var(--bad)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--text);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:700;transition:transform .3s;z-index:99;max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;z-index:50}
+.modal.open{display:flex}
+.modal .sheet{background:var(--card);width:100%;max-width:720px;max-height:85vh;overflow:auto;border-radius:20px 20px 0 0;padding:20px}
+.mode{font-size:12px;text-align:center;margin-top:24px;color:var(--muted)}
+footer{border-top:1px solid var(--line);margin-top:40px;padding:20px 16px;text-align:center;color:var(--muted);font-size:13px}
+footer .lk{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
+footer .lk a{text-decoration:none}
+.hidden{display:none!important}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+.adminTbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+.adminTbl td,.adminTbl th{border-bottom:1px solid var(--line);padding:8px 4px;text-align:left;vertical-align:top}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <div class="logo"><span class="mark">念</span><span id="brandName">염원 독서 챌린지</span></div>
+    <nav>
+      <a href="#home" data-v="home">인증하기</a>
+      <a href="#contents" data-v="contents">추천 콘텐츠</a>
+      <a href="#admin" data-v="admin">운영진</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ================= 인증하기 ================= -->
+<section id="v-home">
+  <div class="hero">
+    <h1 id="heroTitle">염원컴퍼니 독서 챌린지</h1>
+    <p id="heroSub">28일 함께 읽고, 내 브랜드에 적용하기</p>
+    <button class="toggle" id="bookToggle">📚 책 소개 보기 ▾</button>
+    <div id="bookBox" class="card hidden">
+      <h2 id="bookTitle">이번 책</h2>
+      <p class="muted" id="bookAuthor"></p>
+      <p id="bookIntro" style="white-space:pre-wrap;margin-top:8px"></p>
+    </div>
+  </div>
+
+  <div class="card banner" id="recoBanner">
+    <h2>✨ 염혜단 대표의 추천 콘텐츠</h2>
+    <p class="muted">책에서 얻은 인사이트를 영상과 칼럼으로 실제 사업에 적용해 보세요.</p>
+    <div class="row" style="margin-top:12px" id="recoBtns"></div>
+  </div>
+
+  <div class="card">
+    <h2>📌 안내 · 챌린지 규칙</h2>
+    <div class="muted small">오늘 인증 마감까지</div>
+    <div class="count" id="countdown">--:--:--</div>
+    <p class="muted small">매일 <b>23:59</b> 마감 · 1분이라도 늦으면 미인증 처리됩니다.</p>
+    <button class="toggle" id="rulesToggle">나머지 규칙 보기 ▾</button>
+    <ul class="rules hidden" id="rulesList">
+      <li>미인증 <b>누적 5회</b> 시 챌린지에서 제외됩니다. 불가피한 사정은 최소 3일 전에 운영진에게 미리 알려주세요.</li>
+      <li>같은 날짜로 다시 제출하면 새 글이 아니라 <b>기존 글이 수정</b>됩니다. 날짜를 지난 날로 바꾸면 과거 인증글도 수정할 수 있어요.</li>
+      <li>반드시 <b>해당 일자</b>를 선택해 제출하세요. 자정을 넘겨 전날 분량을 올릴 땐 전날 날짜를 고르면 됩니다.</li>
+      <li>마감 이후 제출은 무조건 미인증으로 집계되며 <b>'지각'</b> 표시가 붙습니다.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📖 오늘 읽을 분량</h2>
+    <div class="muted small" id="todayDay"></div>
+    <div class="today" id="todayRead">운영진이 분량을 등록하면 표시됩니다.</div>
+  </div>
+
+  <div class="card" id="formCard">
+    <h2>✍️ 오늘의 인증</h2>
+    <p class="muted small">마감은 매일 23:59 입니다.</p>
+    <form id="certForm" autocomplete="off">
+      <label class="lb">날짜</label>
+      <input type="date" id="fDate" required>
+      <div class="muted small" id="fDateInfo" style="margin-top:4px"></div>
+
+      <label class="lb">이름</label>
+      <div class="combo" id="fNameCombo"></div>
+
+      <label class="lb">오늘 읽은 부분에서 가장 인상 깊었던 핵심 내용</label>
+      <textarea id="fInsight" placeholder="책의 문장이나 핵심 개념을 적어주세요." required></textarea>
+
+      <label class="lb">내 브랜드·사업에 어떻게 적용할 수 있을까?</label>
+      <textarea id="fApply" placeholder="오늘 바로 실행해 볼 한 가지를 적어보세요." required></textarea>
+
+      <button class="btn full" style="margin-top:18px" id="submitBtn">인증하기</button>
+      <p class="muted small" id="editNotice" style="margin-top:8px"></p>
+    </form>
+    <p class="muted small" style="margin-top:12px">인증 후엔 <a href="#contents">추천 콘텐츠</a>로 인사이트를 확장해 보세요.<br>🎁 <b id="daysLabel">28</b>일을 완주하면 나만의 인사이트 요약북을 받을 수 있어요.</p>
+  </div>
+
+  <div class="card">
+    <h2>💬 인증 피드</h2>
+    <div class="row">
+      <select id="feedDate" style="flex:1;min-width:140px"></select>
+      <select id="feedSort" style="flex:1;min-width:140px">
+        <option value="views">많이 읽은 순</option>
+        <option value="likes">추천순</option>
+        <option value="new" selected>최신순</option>
+      </select>
+    </div>
+    <div id="feed"></div>
+    <p class="muted small" style="margin-top:12px">💡 좋은 인사이트는 멤버십 단톡방에도 공유해 주세요!</p>
+  </div>
+
+  <div class="card">
+    <h2>🏆 명예의 전당</h2>
+    <p class="muted small">어제 인증글 중 추천을 가장 많이 받은 TOP 5 · 이름을 누르면 그분의 인사이트를 볼 수 있어요.</p>
+    <ol class="fame" id="fame" style="margin-top:8px"></ol>
+  </div>
+
+  <div class="card" id="meCard">
+    <h2>🙋 본인 확인하기</h2>
+    <p class="muted small">이름을 선택하면 지난 인증 기록, 미인증 횟수, 28일 인증글 모음을 볼 수 있어요.</p>
+    <div class="combo" id="meCombo" style="margin-top:10px"></div>
+    <div id="meResult"></div>
+  </div>
+</section>
+
+<!-- ================= 추천 콘텐츠 ================= -->
+<section id="v-contents" class="hidden">
+  <div class="hero">
+    <h1>추천 콘텐츠</h1>
+    <p>책 속 인사이트를 현장에서 바로 쓰는 법</p>
+  </div>
+  <div id="contentList"></div>
+</section>
+
+<!-- ================= 운영진 ================= -->
+<section id="v-admin" class="hidden">
+  <div class="hero"><h1>운영진 화면</h1><p>챌린지 설정 · 참여자 · 분량 · 인증 현황 관리</p></div>
+
+  <div class="card" id="adminLogin">
+    <h2>🔐 운영진 로그인</h2>
+    <input type="password" id="pinInput" placeholder="운영진 비밀번호 (초기값 0000)">
+    <button class="btn full" style="margin-top:12px" id="pinBtn">입장하기</button>
+  </div>
+
+  <div id="adminBody" class="hidden">
+    <div class="card">
+      <h2>📊 오늘 현황</h2>
+      <div class="stats" id="adStats"></div>
+      <label class="lb">오늘 미인증자</label>
+      <div id="adMissing" class="muted"></div>
+      <label class="lb">누적 미인증 현황 (5회 이상 = 제외 대상)</label>
+      <table class="adminTbl" id="adTable"></table>
+    </div>
+
+    <div class="card">
+      <h2>⚙️ 챌린지 기본 설정</h2>
+      <label class="lb">챌린지 이름</label><input type="text" id="sTitle">
+      <label class="lb">한 줄 소개</label><input type="text" id="sSub">
+      <div class="row">
+        <div style="flex:1"><label class="lb">시작일</label><input type="date" id="sStart"></div>
+        <div style="flex:1"><label class="lb">진행 일수</label><input type="text" id="sDays" inputmode="numeric"></div>
+      </div>
+      <label class="lb">책 제목</label><input type="text" id="sBook">
+      <label class="lb">저자 / 출판사</label><input type="text" id="sAuthor">
+      <label class="lb">책 소개</label><textarea id="sIntro"></textarea>
+    </div>
+
+    <div class="card">
+      <h2>👥 참여자 명단</h2>
+      <p class="muted small">한 줄에 한 명씩 입력하세요.</p>
+      <textarea id="sMembers" style="min-height:160px"></textarea>
+    </div>
+
+    <div class="card">
+      <h2>📖 일차별 읽을 분량</h2>
+      <p class="muted small">한 줄 = 하루. 1번째 줄이 1일차입니다. 예) 1장 · p.1~32</p>
+      <textarea id="sSchedule" style="min-height:220px"></textarea>
+    </div>
+
+    <div class="card">
+      <h2>🔗 추천 콘텐츠</h2>
+      <p class="muted small">한 줄에 하나씩: <b>분류 | 제목 | 링크 | 설명</b> (분류는 유튜브 / 칼럼 / 기타)</p>
+      <textarea id="sContents" style="min-height:160px"></textarea>
+      <label class="lb">운영진 비밀번호 변경</label>
+      <input type="password" id="sPin" placeholder="새 비밀번호 (비워두면 유지)">
+    </div>
+
+    <button class="btn full" style="margin-top:16px" id="saveSettings">설정 저장하기</button>
+
+    <div class="card">
+      <h2>🗂️ 인증글 관리</h2>
+      <div class="row">
+        <button class="btn ghost sm" id="copyCsv">전체 인증 CSV 복사</button>
+        <button class="btn ghost sm" id="logoutBtn">로그아웃</button>
+      </div>
+      <div id="adPosts"></div>
+    </div>
+  </div>
+</section>
+
+<p class="mode" id="modeLabel"></p>
+</div>
+
+<footer>
+  <div class="lk">
+    <a href="#home">📌 안내</a><a href="#home" data-jump="feed">💬 인증 피드</a><a href="#home" data-jump="fame">🏆 명예의 전당</a><a href="#home" data-jump="meCard">🙋 내 현황</a>
+  </div>
+  <div id="footTitle">염원컴퍼니 독서 챌린지</div>
+  <div class="small" id="footStore">인증 데이터는 데이터베이스에 저장되어 참여자 모두와 공유됩니다.</div>
+  <div class="small" style="margin-top:4px">© 염원컴퍼니 · AI Growth Marketing Company</div>
+</footer>
+
+<div class="modal" id="modal"><div class="sheet" id="modalBody"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================== 유틸 =========================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const toast = (m) => { const t=$('#toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2400); };
+const ls = { get(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } }, set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} } };
+
+// 한국시간(KST) 기준 날짜/시간
+const KST = 9*3600*1000;
+const kstNow = () => new Date(Date.now()+KST);              // UTC getter = KST 값
+const ymd = d => d.toISOString().slice(0,10);
+const todayStr = () => ymd(kstNow());
+const addDays = (s,n) => { const d=new Date(s+'T00:00:00Z'); d.setUTCDate(d.getUTCDate()+n); return ymd(d); };
+const diffDays = (a,b) => Math.round((new Date(a+'T00:00:00Z')-new Date(b+'T00:00:00Z'))/86400000);
+const deadlineMs = date => new Date(date+'T23:59:59Z').getTime()-KST; // 해당일 23:59:59 KST
+const fmtDate = s => { const d=new Date(s+'T00:00:00Z'); return `${d.getUTCMonth()+1}월 ${d.getUTCDate()}일 (${'일월화수목금토'[d.getUTCDay()]})`; };
+const fmtTime = ms => { const d=new Date(ms+KST); return `${d.getUTCMonth()+1}/${d.getUTCDate()} ${String(d.getUTCHours()).padStart(2,'0')}:${String(d.getUTCMinutes()).padStart(2,'0')}`; };
+
+// 초성 검색
+const CHO = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+const chosung = s => [...s].map(c=>{ const k=c.charCodeAt(0)-0xAC00; return (k>=0&&k<=11171)?CHO[Math.floor(k/588)]:c; }).join('');
+const matchName = (name,q) => { q=q.trim(); if(!q) return true; return name.includes(q) || chosung(name).includes(q); };
+
+/* =========================== 데이터 저장소 =========================== */
+const DEFAULTS = {
+  title:'염원컴퍼니 독서 챌린지', sub:'28일 함께 읽고, 내 브랜드에 적용하기',
+  startDate: todayStr(), days:28,
+  book:'', author:'', intro:'',
+  members:['염혜단'], schedule:[],
+  contents:[
+    {cat:'유튜브', title:'프차언니 유튜브', url:'https://www.youtube.com/results?search_query=%ED%94%84%EC%B0%A8%EC%96%B8%EB%8B%88', desc:'창업자의 돈을 지켜주는 프랜차이즈 언니'},
+    {cat:'칼럼', title:'염원컴퍼니 블로그 칼럼', url:'https://search.naver.com/search.naver?query=%EC%97%BC%EC%9B%90%EC%BB%B4%ED%8D%BC%EB%8B%88+%EB%B8%94%EB%A1%9C%EA%B7%B8', desc:'AI 마케팅 · 프랜차이즈 실전 노하우'}
+  ],
+  pin:'0000'
+};
+
+const hasFirebase = !!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.projectId);
+let Store;
+
+function loadScript(src){ return new Promise((ok,no)=>{ const s=document.createElement('script'); s.src=src; s.onload=ok; s.onerror=no; document.head.appendChild(s); }); }
+
+async function initStore(){
+  if(hasFirebase){
+    try{
+      await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
+      await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js');
+      firebase.initializeApp(window.FIREBASE_CONFIG);
+      const fs = firebase.firestore();
+      const inc = firebase.firestore.FieldValue.increment;
+      Store = {
+        mode:'firebase',
+        watchSettings(cb){ fs.doc('config/main').onSnapshot(d=>cb({...DEFAULTS,...(d.data()||{})})); },
+        saveSettings(o){ return fs.doc('config/main').set(o,{merge:true}); },
+        watchPosts(cb){ fs.collection('posts').onSnapshot(q=>cb(q.docs.map(d=>({id:d.id,...d.data()})))); },
+        async upsert(p){ const ref=fs.collection('posts').doc(p.id); const ex=await ref.get();
+          if(ex.exists){ await ref.update({insight:p.insight,apply:p.apply,updatedAt:p.updatedAt,late:p.late}); return 'edit'; }
+          await ref.set({...p,likes:0,views:0}); return 'new'; },
+        bump(id,field,n=1){ return fs.collection('posts').doc(id).update({[field]:inc(n)}); },
+        remove(id){ return fs.collection('posts').doc(id).delete(); }
+      };
+      return;
+    }catch(e){ console.warn('Firebase 연결 실패, 체험 모드로 전환', e); }
+  }
+  // ---- 체험 모드 (localStorage) ----
+  const subs = {s:[],p:[]};
+  const getP = () => ls.get('rc_posts',{});
+  const emitP = () => { const o=getP(); subs.p.forEach(cb=>cb(Object.keys(o).map(id=>({id,...o[id]})))); };
+  Store = {
+    mode:'local',
+    watchSettings(cb){ subs.s.push(cb); cb({...DEFAULTS,...ls.get('rc_settings',{})}); },
+    async saveSettings(o){ ls.set('rc_settings',{...ls.get('rc_settings',{}),...o}); subs.s.forEach(cb=>cb({...DEFAULTS,...ls.get('rc_settings',{})})); },
+    watchPosts(cb){ subs.p.push(cb); emitP(); },
+    async upsert(p){ const o=getP(); const isEdit=!!o[p.id];
+      o[p.id] = isEdit ? {...o[p.id],insight:p.insight,apply:p.apply,updatedAt:p.updatedAt,late:p.late} : {...p,likes:0,views:0};
+      ls.set('rc_posts',o); emitP(); return isEdit?'edit':'new'; },
+    async bump(id,field,n=1){ const o=getP(); if(o[id]){ o[id][field]=(o[id][field]||0)+n; ls.set('rc_posts',o); emitP(); } },
+    async remove(id){ const o=getP(); delete o[id]; ls.set('rc_posts',o); emitP(); }
+  };
+}
+
+/* =========================== 상태 =========================== */
+let S = {...DEFAULTS};
+let POSTS = [];
+const liked = new Set(ls.get('rc_liked',[]));
+const viewed = new Set();
+let isAdmin = false; try{ isAdmin = sessionStorage.getItem('rc_admin')==='1'; }catch(e){}
+
+const postId = (date,name) => `${date}_${encodeURIComponent(name)}`;
+const dayIndex = date => diffDays(date,S.startDate); // 0-based
+const lastDay = () => addDays(S.startDate,(+S.days||28)-1);
+
+/* =========================== 이름 선택 콤보박스 =========================== */
+function makeCombo(el, onPick){
+  el.innerHTML = `<input type="text" placeholder="— 이름 선택 — (이름 또는 초성 검색)"><ul></ul>`;
+  const inp = el.querySelector('input'), ul = el.querySelector('ul');
+  let act=-1, list=[];
+  const draw = () => {
+    list = (S.members||[]).filter(n=>matchName(n,inp.value));
+    ul.innerHTML = list.length ? list.map((n,i)=>`<li data-i="${i}" class="${i===act?'act':''}">${esc(n)}</li>`).join('') : `<li style="color:var(--muted);cursor:default">일치하는 이름이 없어요</li>`;
+    ul.classList.add('open');
+  };
+  const pick = n => { inp.value=n; el.dataset.value=n; ul.classList.remove('open'); onPick&&onPick(n); };
+  inp.addEventListener('focus',()=>{ act=-1; draw(); });
+  inp.addEventListener('input',()=>{ el.dataset.value=''; act=0; draw(); });
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='ArrowDown'){ act=Math.min(act+1,list.length-1); draw(); e.preventDefault(); }
+    else if(e.key==='ArrowUp'){ act=Math.max(act-1,0); draw(); e.preventDefault(); }
+    else if(e.key==='Enter'){ if(ul.classList.contains('open')&&list[act]){ pick(list[act]); e.preventDefault(); } }
+    else if(e.key==='Escape'){ ul.classList.remove('open'); }
+  });
+  ul.addEventListener('mousedown',e=>{ const li=e.target.closest('li[data-i]'); if(li){ e.preventDefault(); pick(list[+li.dataset.i]); } });
+  inp.addEventListener('blur',()=>setTimeout(()=>{ ul.classList.remove('open'); if(!S.members.includes(inp.value)){ if(!el.dataset.value) inp.value=''; } },150));
+  return { get:()=>el.dataset.value||'', set:n=>{ inp.value=n; el.dataset.value=n; } };
+}
+
+/* =========================== 렌더링 =========================== */
+function renderSettings(){
+  document.title = `${S.title} · 인증하기`;
+  $('#brandName').textContent = S.title.replace('염원컴퍼니 ','염원 ');
+  $('#heroTitle').textContent = S.title; $('#footTitle').textContent = S.title;
+  $('#heroSub').textContent = S.sub;
+  $('#daysLabel').textContent = S.days;
+  $('#bookTitle').textContent = S.book ? `📕 ${S.book}` : '📕 책 정보가 아직 등록되지 않았어요';
+  $('#bookAuthor').textContent = S.author || '';
+  $('#bookIntro').textContent = S.intro || '운영진 화면에서 책 소개를 입력해 주세요.';
+  // 추천 콘텐츠 버튼
+  const yt = S.contents.find(c=>c.cat==='유튜브'), col = S.contents.find(c=>c.cat==='칼럼');
+  $('#recoBtns').innerHTML = [yt&&`<a class="btn sm" href="${esc(yt.url)}" target="_blank" rel="noopener">▶ 추천 유튜브</a>`, col&&`<a class="btn ghost sm" href="${esc(col.url)}" target="_blank" rel="noopener">📰 뉴스레터 칼럼</a>`, `<a class="btn ghost sm" href="#contents">전체 보기 →</a>`].filter(Boolean).join('');
+  $('#contentList').innerHTML = S.contents.length ? S.contents.map(c=>`
+    <div class="card"><span class="tag">${esc(c.cat)}</span>
+      <h2 style="margin-top:8px">${esc(c.title)}</h2>
+      <p class="muted">${esc(c.desc||'')}</p>
+      <a class="btn sm" style="display:inline-block;margin-top:12px;text-decoration:none" href="${esc(c.url)}" target="_blank" rel="noopener">바로 보기 →</a>
+    </div>`).join('') : `<div class="card empty">등록된 추천 콘텐츠가 없어요.</div>`;
+  renderToday(); renderDateInfo(); renderFeedDates();
+}
+
+function renderToday(){
+  const t = todayStr(), i = dayIndex(t);
+  if(i<0){ $('#todayDay').textContent = `챌린지 시작: ${fmtDate(S.startDate)}`; $('#todayRead').textContent = `D-${-i} · 곧 시작합니다!`; return; }
+  if(i>=+S.days){ $('#todayDay').textContent = '챌린지 종료'; $('#todayRead').textContent = '🎉 완주를 축하합니다! 본인 확인하기에서 28일 인증글 모음을 받아보세요.'; return; }
+  $('#todayDay').textContent = `${i+1}일차 · ${fmtDate(t)}`;
+  $('#todayRead').textContent = S.schedule[i] || '운영진이 분량을 등록하면 표시됩니다.';
+}
+
+function renderDateInfo(){
+  const d = $('#fDate').value; if(!d) return;
+  const i = dayIndex(d);
+  const read = (i>=0 && i<+S.days) ? `${i+1}일차 · ${S.schedule[i]||'분량 미등록'}` : '챌린지 기간 밖의 날짜입니다';
+  const late = Date.now() > deadlineMs(d);
+  $('#fDateInfo').innerHTML = `${esc(read)}${late?' · <span style="color:var(--bad)">마감 지남 (제출 시 지각 처리)</span>':''}`;
+  checkExisting();
+}
+
+function checkExisting(){
+  const n = nameCombo?.get(), d=$('#fDate').value;
+  const ex = n && POSTS.find(p=>p.id===postId(d,n));
+  $('#editNotice').textContent = ex ? '✏️ 이미 이 날짜에 제출한 글이 있어요. 제출하면 기존 글이 수정됩니다.' : '';
+  $('#submitBtn').textContent = ex ? '수정하기' : '인증하기';
+  if(ex && !$('#fInsight').value && !$('#fApply').value){ $('#fInsight').value=ex.insight; $('#fApply').value=ex.apply; }
+}
+
+function renderFeedDates(){
+  const sel=$('#feedDate'), cur=sel.value;
+  const dates=[...new Set(POSTS.map(p=>p.date))].sort().reverse();
+  sel.innerHTML = `<option value="">전체 날짜</option>` + dates.map(d=>`<option value="${d}">${fmtDate(d)}${dayIndex(d)>=0?` · ${dayIndex(d)+1}일차`:''}</option>`).join('');
+  if(dates.includes(cur)) sel.value=cur;
+}
+
+function postHTML(p, opts={}){
+  const open = opts.open;
+  return `<div class="post" data-id="${esc(p.id)}">
+    <div class="ph"><span class="nm" data-name="${esc(p.name)}">${esc(p.name)}</span>
+      <span class="tag">${fmtDate(p.date)}</span>
+      ${p.late?'<span class="tag late">지각</span>':''}
+      ${p.updatedAt&&p.updatedAt!==p.createdAt?'<span class="tag">수정됨</span>':''}
+    </div>
+    <h4>💡 핵심 내용</h4><p class="${open?'':'clip'}">${esc(p.insight)}</p>
+    <h4>🚀 내 사업 적용</h4><p class="${open?'':'clip'}">${esc(p.apply)}</p>
+    <div class="ft">
+      <button class="btn ghost sm like ${liked.has(p.id)?'on':''}" data-like="${esc(p.id)}">👍 추천 ${p.likes||0}</button>
+      ${open?'':`<button class="btn ghost sm" data-more="${esc(p.id)}">전체 읽기</button>`}
+      <span class="muted small" style="margin-left:auto">👀 ${p.views||0} · ${fmtTime(p.updatedAt||p.createdAt)}</span>
+    </div></div>`;
+}
+
+function renderFeed(){
+  const d=$('#feedDate').value, sort=$('#feedSort').value;
+  let list = POSTS.filter(p=>!d||p.date===d);
+  const key = {views:p=>p.views||0, likes:p=>p.likes||0, new:p=>p.updatedAt||p.createdAt}[sort];
+  list.sort((a,b)=>key(b)-key(a) || (b.createdAt-a.createdAt));
+  $('#feed').innerHTML = list.length ? list.slice(0,100).map(p=>postHTML(p)).join('') : `<div class="empty">제출된 인증글이 없습니다.</div>`;
+}
+
+function renderFame(){
+  const y = addDays(todayStr(),-1);
+  const list = POSTS.filter(p=>p.date===y && (p.likes||0)>0).sort((a,b)=>(b.likes||0)-(a.likes||0)).slice(0,5);
+  $('#fame').innerHTML = list.length ? list.map((p,i)=>`<li><span class="rk">${i+1}</span>
+      <span class="nm" data-name="${esc(p.name)}" style="font-weight:700;cursor:pointer">${esc(p.name)}</span>
+      <span class="muted small clip" style="flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${esc(p.insight)}</span>
+      <span class="tag">👍 ${p.likes}</span></li>`).join('') : `<li class="empty" style="display:block;border:0">집계된 순위가 없습니다.</li>`;
+}
+
+function personStats(name){
+  const mine = POSTS.filter(p=>p.name===name).sort((a,b)=>a.date.localeCompare(b.date));
+  const byDate = Object.fromEntries(mine.map(p=>[p.date,p]));
+  const y = addDays(todayStr(),-1), end = lastDay();
+  const cells=[]; let ok=0, miss=0;
+  for(let i=0;i<+S.days;i++){
+    const d=addDays(S.startDate,i), p=byDate[d];
+    let st='future';
+    if(p && !p.late){ st='ok'; ok++; }
+    else if(p && p.late){ st='late'; miss++; }
+    else if(d<=y && d<=end){ st='miss'; miss++; }
+    else if(d===todayStr()) st='today';
+    cells.push({d,i,st});
+  }
+  return {mine,cells,ok,miss};
+}
+
+function renderMe(name){
+  if(!name){ $('#meResult').innerHTML=''; return; }
+  const {mine,cells,ok,miss} = personStats(name);
+  $('#meResult').innerHTML = `
+    <div class="stats">
+      <div class="stat"><b style="color:var(--ok)">${ok}</b><span class="muted small">정상 인증</span></div>
+      <div class="stat"><b style="color:${miss>=5?'var(--bad)':'var(--text)'}">${miss}</b><span class="muted small">미인증 (5회 제외)</span></div>
+      <div class="stat"><b>${Math.round(ok/(+S.days)*100)}%</b><span class="muted small">달성률</span></div>
+    </div>
+    ${miss>=4&&miss<5?'<p style="color:var(--bad);margin-top:10px;font-weight:700">⚠️ 미인증 1회만 더 생기면 제외 대상이에요!</p>':''}
+    ${miss>=5?'<p style="color:var(--bad);margin-top:10px;font-weight:700">미인증 5회 누적 · 운영진에게 문의해 주세요.</p>':''}
+    <div class="grid28">${cells.map(c=>`<div class="cell ${c.st}" title="${c.d}">${c.i+1}</div>`).join('')}</div>
+    <p class="muted small" style="margin-top:8px">🟩 인증 · 🟥 지각 · 연분홍 미인증</p>
+    <div class="row" style="margin-top:14px">
+      <button class="btn sm" id="bookBtn" ${mine.length?'':'disabled'}>📘 ${S.days}일 인증글 모음 보기</button>
+    </div>
+    <label class="lb">지난 인증 기록 (${mine.length}건)</label>
+    ${mine.length? mine.slice().reverse().map(p=>postHTML(p)).join('') : '<div class="empty">아직 인증 기록이 없어요.</div>'}`;
+  $('#bookBtn')?.addEventListener('click',()=>openBook(name));
+}
+
+function bookText(name){
+  const mine = POSTS.filter(p=>p.name===name).sort((a,b)=>a.date.localeCompare(b.date));
+  let t = `📘 ${S.title}\n${S.book?`『${S.book}』 `:''}${name}님의 ${S.days}일 인사이트 요약북\n\n`;
+  mine.forEach(p=>{ const i=dayIndex(p.date); t+=`━━━━━━━━━━━━\n[${i+1}일차] ${fmtDate(p.date)}${S.schedule[i]?` · ${S.schedule[i]}`:''}\n\n💡 핵심 내용\n${p.insight}\n\n🚀 내 사업 적용\n${p.apply}\n\n`; });
+  return t;
+}
+function openBook(name){
+  const t = bookText(name);
+  openModal(`<div class="row"><h2 style="flex:1">📘 ${esc(name)}님의 요약북</h2><button class="btn sm" id="cpBook">전체 복사</button><button class="btn ghost sm" data-close>닫기</button></div>
+    <pre style="white-space:pre-wrap;font-family:inherit;margin-top:14px;font-size:15px">${esc(t)}</pre>`);
+  $('#cpBook').onclick = async()=>{ try{ await navigator.clipboard.writeText(t); toast('복사했어요! 메모장·노션에 붙여넣으세요'); }catch(e){ toast('복사가 막혀 있어요. 길게 눌러 직접 복사해 주세요'); } };
+}
+function openPerson(name){
+  const mine = POSTS.filter(p=>p.name===name).sort((a,b)=>b.date.localeCompare(a.date));
+  openModal(`<div class="row"><h2 style="flex:1">${esc(name)}님의 인사이트</h2><button class="btn ghost sm" data-close>닫기</button></div>
+    ${mine.map(p=>postHTML(p,{open:true})).join('')||'<div class="empty">인증글이 없어요.</div>'}`);
+}
+function openModal(html){ $('#modalBody').innerHTML=html; $('#modal').classList.add('open'); }
+$('#modal').addEventListener('click',e=>{ if(e.target.id==='modal'||e.target.closest('[data-close]')) $('#modal').classList.remove('open'); });
+
+/* =========================== 운영진 =========================== */
+function renderAdmin(){
+  $('#adminLogin').classList.toggle('hidden',isAdmin);
+  $('#adminBody').classList.toggle('hidden',!isAdmin);
+  if(!isAdmin) return;
+  const t=todayStr();
+  const todayNames = new Set(POSTS.filter(p=>p.date===t).map(p=>p.name));
+  const missing = S.members.filter(n=>!todayNames.has(n));
+  $('#adStats').innerHTML = `<div class="stat"><b>${S.members.length}</b><span class="muted small">참여자</span></div>
+    <div class="stat"><b style="color:var(--ok)">${todayNames.size}</b><span class="muted small">오늘 인증</span></div>
+    <div class="stat"><b style="color:var(--bad)">${missing.length}</b><span class="muted small">오늘 미인증</span></div>`;
+  $('#adMissing').textContent = missing.join(', ') || '모두 인증 완료! 🎉';
+  const rows = S.members.map(n=>({n,...personStats(n)})).sort((a,b)=>b.miss-a.miss);
+  $('#adTable').innerHTML = `<tr><th>이름</th><th>인증</th><th>미인증</th><th>상태</th></tr>` + rows.map(r=>`<tr><td>${esc(r.n)}</td><td>${r.ok}</td><td>${r.miss}</td><td>${r.miss>=5?'<span class="tag late">제외 대상</span>':r.miss>=4?'<span class="tag late">경고</span>':'<span class="tag ok">정상</span>'}</td></tr>`).join('');
+  const list = POSTS.slice().sort((a,b)=>b.date.localeCompare(a.date)||b.createdAt-a.createdAt).slice(0,60);
+  $('#adPosts').innerHTML = list.map(p=>`<div class="post"><div class="ph"><b>${esc(p.name)}</b><span class="tag">${p.date}</span>${p.late?'<span class="tag late">지각</span>':''}
+    <button class="btn ghost sm" style="margin-left:auto" data-del="${esc(p.id)}">삭제</button></div><p class="clip muted small" style="margin-top:6px">${esc(p.insight)}</p></div>`).join('') || '<div class="empty">인증글이 없어요.</div>';
+}
+function fillAdminForm(){
+  $('#sTitle').value=S.title; $('#sSub').value=S.sub; $('#sStart').value=S.startDate; $('#sDays').value=S.days;
+  $('#sBook').value=S.book; $('#sAuthor').value=S.author; $('#sIntro').value=S.intro;
+  $('#sMembers').value=S.members.join('\n'); $('#sSchedule').value=S.schedule.join('\n');
+  $('#sContents').value=S.contents.map(c=>[c.cat,c.title,c.url,c.desc].join(' | ')).join('\n');
+}
+$('#pinBtn').onclick = ()=>{ if($('#pinInput').value===String(S.pin)){ isAdmin=true; try{sessionStorage.setItem('rc_admin','1');}catch(e){} fillAdminForm(); renderAdmin(); toast('운영진 화면에 입장했어요'); } else toast('비밀번호가 맞지 않아요'); };
+$('#pinInput').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#pinBtn').click(); });
+$('#logoutBtn').onclick = ()=>{ isAdmin=false; try{sessionStorage.removeItem('rc_admin');}catch(e){} renderAdmin(); };
+$('#saveSettings').onclick = async()=>{
+  const o = {
+    title:$('#sTitle').value.trim()||DEFAULTS.title, sub:$('#sSub').value.trim(),
+    startDate:$('#sStart').value||todayStr(), days:Math.max(1,parseInt($('#sDays').value)||28),
+    book:$('#sBook').value.trim(), author:$('#sAuthor').value.trim(), intro:$('#sIntro').value.trim(),
+    members:[...new Set($('#sMembers').value.split('\n').map(s=>s.trim()).filter(Boolean))],
+    schedule:$('#sSchedule').value.split('\n').map(s=>s.trim()),
+    contents:$('#sContents').value.split('\n').map(l=>l.split('|').map(s=>s.trim())).filter(a=>a[1]&&a[2]).map(([cat,title,url,desc])=>({cat,title,url,desc:desc||''}))
+  };
+  if($('#sPin').value.trim()) o.pin=$('#sPin').value.trim();
+  try{ await Store.saveSettings(o); $('#sPin').value=''; toast('설정을 저장했어요'); }catch(e){ toast('저장 실패: '+e.message); }
+};
+$('#copyCsv').onclick = async()=>{
+  const q = s => `"${String(s??'').replace(/"/g,'""')}"`;
+  const csv = ['날짜,일차,이름,지각,핵심내용,적용,추천,조회'].concat(POSTS.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(p=>[p.date,dayIndex(p.date)+1,p.name,p.late?'지각':'',p.insight,p.apply,p.likes||0,p.views||0].map(q).join(','))).join('\n');
+  try{ await navigator.clipboard.writeText(csv); toast('CSV를 복사했어요. 구글시트에 붙여넣으세요'); }catch(e){ openModal(`<div class="row"><h2 style="flex:1">CSV</h2><button class="btn ghost sm" data-close>닫기</button></div><textarea style="min-height:300px;margin-top:10px">${esc(csv)}</textarea>`); }
+};
+
+/* =========================== 이벤트 =========================== */
+let nameCombo, meCombo;
+document.addEventListener('click', async e=>{
+  const like = e.target.closest('[data-like]');
+  if(like){ const id=like.dataset.like;
+    if(liked.has(id)){ liked.delete(id); await Store.bump(id,'likes',-1); } else { liked.add(id); await Store.bump(id,'likes',1); }
+    ls.set('rc_liked',[...liked]); return; }
+  const more = e.target.closest('[data-more]');
+  if(more){ const p=POSTS.find(x=>x.id===more.dataset.more); if(!p) return;
+    if(!viewed.has(p.id)){ viewed.add(p.id); Store.bump(p.id,'views',1); }
+    openModal(`<div class="row"><h2 style="flex:1">${esc(p.name)}님의 인증</h2><button class="btn ghost sm" data-close>닫기</button></div>${postHTML({...p,views:(p.views||0)+1},{open:true})}`); return; }
+  const nm = e.target.closest('.nm[data-name]');
+  if(nm){ openPerson(nm.dataset.name); return; }
+  const del = e.target.closest('[data-del]');
+  if(del && isAdmin){ if(del.dataset.confirm==='1'){ await Store.remove(del.dataset.del); toast('삭제했어요'); } else { del.dataset.confirm='1'; del.textContent='한 번 더 누르면 삭제'; setTimeout(()=>{ del.dataset.confirm=''; del.textContent='삭제'; },3000); } return; }
+  const jump = e.target.closest('[data-jump]');
+  if(jump){ setTimeout(()=>document.getElementById(jump.dataset.jump)?.scrollIntoView({behavior:'smooth',block:'start'}),50); }
+});
+$('#bookToggle').onclick = ()=>{ const h=$('#bookBox').classList.toggle('hidden'); $('#bookToggle').textContent = h?'📚 책 소개 보기 ▾':'📚 책 소개 접기 ▴'; };
+$('#rulesToggle').onclick = ()=>{ const h=$('#rulesList').classList.toggle('hidden'); $('#rulesToggle').textContent = h?'나머지 규칙 보기 ▾':'규칙 접기 ▴'; };
+$('#feedDate').onchange = renderFeed; $('#feedSort').onchange = renderFeed;
+$('#fDate').addEventListener('change',()=>{ $('#fInsight').value=''; $('#fApply').value=''; renderDateInfo(); });
+
+$('#certForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const name=nameCombo.get(), date=$('#fDate').value, insight=$('#fInsight').value.trim(), apply=$('#fApply').value.trim();
+  if(!name) return toast('이름을 목록에서 선택해 주세요');
+  if(!date) return toast('날짜를 선택해 주세요');
+  if(insight.length<10||apply.length<10) return toast('두 항목 모두 10자 이상 적어주세요');
+  const now=Date.now();
+  const p={id:postId(date,name),date,name,insight,apply,createdAt:now,updatedAt:now,late:now>deadlineMs(date)};
+  $('#submitBtn').disabled=true;
+  try{
+    const r = await Store.upsert(p);
+    ls.set('rc_me',name);
+    toast(p.late ? '제출 완료 · 마감 이후라 지각으로 기록돼요' : (r==='edit'?'✏️ 인증글을 수정했어요':'🎉 오늘 인증 완료! 수고하셨어요'));
+    $('#fInsight').value=''; $('#fApply').value='';
+    meCombo.set(name); renderMe(name);
+  }catch(err){ toast('제출 실패: '+err.message); }
+  $('#submitBtn').disabled=false; checkExisting();
+});
+
+/* 카운트다운 */
+function tick(){
+  const left = deadlineMs(todayStr()) - Date.now();
+  const s=Math.max(0,Math.floor(left/1000));
+  $('#countdown').textContent = [Math.floor(s/3600),Math.floor(s%3600/60),s%60].map(n=>String(n).padStart(2,'0')).join(':');
+  $('#countdown').style.color = s<3600 ? 'var(--bad)' : 'var(--accent)';
+  if(tick._day!==todayStr()){ tick._day=todayStr(); renderToday(); renderFame(); }
+}
+
+/* 화면 전환 (#home / #contents / #admin) */
+function route(){
+  const v = ['home','contents','admin'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home';
+  ['home','contents','admin'].forEach(k=>$('#v-'+k).classList.toggle('hidden',k!==v));
+  document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===v));
+  if(v==='admin'){ if(isAdmin) fillAdminForm(); renderAdmin(); }
+  if(v!=='home') window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+
+/* =========================== 시작 =========================== */
+(async()=>{
+  $('#fDate').value = todayStr();
+  nameCombo = makeCombo($('#fNameCombo'), ()=>{ $('#fInsight').value=''; $('#fApply').value=''; checkExisting(); });
+  meCombo = makeCombo($('#meCombo'), n=>renderMe(n));
+  route(); tick(); setInterval(tick,1000);
+  await initStore();
+  $('#modeLabel').textContent = Store.mode==='firebase' ? '🟢 공유 모드 · 모든 참여자와 실시간 공유 중' : '🟡 체험 모드 · 이 브라우저에만 저장됩니다 (Firebase 연결 시 공유 모드로 전환)';
+  if(Store.mode!=='firebase') $('#footStore').textContent='현재 체험 모드입니다. Firebase를 연결하면 참여자 모두와 공유됩니다.';
+  Store.watchSettings(s=>{ S={...DEFAULTS,...s}; renderSettings(); renderFeed(); renderFame(); renderMe(meCombo.get()); if(isAdmin&&location.hash==='#admin') renderAdmin(); });
+  Store.watchPosts(list=>{ POSTS=list; renderFeedDates(); renderFeed(); renderFame(); renderMe(meCombo.get()); checkExisting(); if(isAdmin) renderAdmin(); });
+  const me=ls.get('rc_me',''); if(me && S.members.includes(me)){ nameCombo.set(me); meCombo.set(me); renderMe(me); checkExisting(); }
+})();
+</script>
+</body>
+</html>
