@@ -235,7 +235,7 @@ hr{border:0;border-top:1px solid var(--line);margin:18px 0}
 
   <div class="card" id="adminLogin">
     <h2>🔐 운영진 로그인</h2>
-    <input type="password" id="pinInput" placeholder="운영진 비밀번호 (초기값 0000)">
+    <input type="password" id="pinInput" placeholder="운영진 비밀번호">
     <button class="btn full" style="margin-top:12px" id="pinBtn">입장하기</button>
   </div>
 
@@ -356,9 +356,16 @@ async function initStore(){
     try{
       await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
       await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js');
+      await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js');
       firebase.initializeApp(window.FIREBASE_CONFIG);
       const fs = firebase.firestore();
       const inc = firebase.firestore.FieldValue.increment;
+      // 운영진 로그인: 비밀번호는 DB에 저장하지 않고 Firebase 인증으로 확인
+      const auth = firebase.auth();
+      const ADMIN_EMAIL = 'reading-admin@pilsa-auth.web.app';
+      const pw = p => 'pilsa#' + p + '#admin';
+      try{ await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION); }catch(e){}
+      auth.onAuthStateChanged(u=>{ isAdmin = !!(u && u.email===ADMIN_EMAIL); try{ if(isAdmin) fillAdminForm(); renderAdmin(); }catch(e){} });
       Store = {
         mode:'firebase',
         watchSettings(cb){ fs.doc('config/main').onSnapshot(d=>cb({...DEFAULTS,...(d.data()||{})})); },
@@ -368,6 +375,9 @@ async function initStore(){
           if(ex.exists){ await ref.update({insight:p.insight,apply:p.apply,updatedAt:p.updatedAt,late:p.late}); return 'edit'; }
           await ref.set({...p,likes:0,views:0}); return 'new'; },
         bump(id,field,n=1){ return fs.collection('posts').doc(id).update({[field]:inc(n)}); },
+        async login(p){ await auth.signInWithEmailAndPassword(ADMIN_EMAIL, pw(p)); return true; },
+        logout(){ return auth.signOut(); },
+        changePin(p){ return auth.currentUser.updatePassword(pw(p)); },
         remove(id){ return fs.collection('posts').doc(id).delete(); }
       };
       return;
@@ -386,7 +396,10 @@ async function initStore(){
       o[p.id] = isEdit ? {...o[p.id],insight:p.insight,apply:p.apply,updatedAt:p.updatedAt,late:p.late} : {...p,likes:0,views:0};
       ls.set('rc_posts',o); emitP(); return isEdit?'edit':'new'; },
     async bump(id,field,n=1){ const o=getP(); if(o[id]){ o[id][field]=(o[id][field]||0)+n; ls.set('rc_posts',o); emitP(); } },
-    async remove(id){ const o=getP(); delete o[id]; ls.set('rc_posts',o); emitP(); }
+    async remove(id){ const o=getP(); delete o[id]; ls.set('rc_posts',o); emitP(); },
+    async login(p){ return p===String(S.pin); },
+    async logout(){},
+    changePin(p){ return this.saveSettings({pin:p}); }
   };
 }
 
@@ -395,7 +408,7 @@ let S = {...DEFAULTS};
 let POSTS = [];
 const liked = new Set(ls.get('rc_liked',[]));
 const viewed = new Set();
-let isAdmin = false; try{ isAdmin = sessionStorage.getItem('rc_admin')==='1'; }catch(e){}
+let isAdmin = false;
 
 const postId = (date,name) => `${date}_${encodeURIComponent(name)}`;
 const dayIndex = date => diffDays(date,S.startDate); // 0-based
@@ -595,9 +608,9 @@ function fillAdminForm(){
   $('#sMembers').value=S.members.join('\n'); $('#sSchedule').value=S.schedule.join('\n');
   $('#sContents').value=S.contents.map(c=>[c.cat,c.title,c.url,c.desc].join(' | ')).join('\n');
 }
-$('#pinBtn').onclick = ()=>{ if($('#pinInput').value===String(S.pin)){ isAdmin=true; try{sessionStorage.setItem('rc_admin','1');}catch(e){} fillAdminForm(); renderAdmin(); toast('운영진 화면에 입장했어요'); } else toast('비밀번호가 맞지 않아요'); };
+$('#pinBtn').onclick = async()=>{ const v=$('#pinInput').value; let ok=false; $('#pinBtn').disabled=true; try{ ok = await Store.login(v); }catch(e){ ok=false; } $('#pinBtn').disabled=false; if(ok){ isAdmin=true; $('#pinInput').value=''; fillAdminForm(); renderAdmin(); toast('운영진 화면에 입장했어요'); } else toast('비밀번호가 맞지 않아요'); };
 $('#pinInput').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#pinBtn').click(); });
-$('#logoutBtn').onclick = ()=>{ isAdmin=false; try{sessionStorage.removeItem('rc_admin');}catch(e){} renderAdmin(); };
+$('#logoutBtn').onclick = async()=>{ isAdmin=false; try{ await Store.logout(); }catch(e){} renderAdmin(); };
 $('#saveSettings').onclick = async()=>{
   const o = {
     title:$('#sTitle').value.trim()||DEFAULTS.title, sub:$('#sSub').value.trim(),
@@ -607,8 +620,8 @@ $('#saveSettings').onclick = async()=>{
     schedule:$('#sSchedule').value.split('\n').map(s=>s.trim()),
     contents:$('#sContents').value.split('\n').map(l=>l.split('|').map(s=>s.trim())).filter(a=>a[1]&&a[2]).map(([cat,title,url,desc])=>({cat,title,url,desc:desc||''}))
   };
-  if($('#sPin').value.trim()) o.pin=$('#sPin').value.trim();
-  try{ await Store.saveSettings(o); $('#sPin').value=''; toast('설정을 저장했어요'); }catch(e){ toast('저장 실패: '+e.message); }
+  const newPin=$('#sPin').value.trim();
+  try{ await Store.saveSettings(o); if(newPin){ await Store.changePin(newPin); } $('#sPin').value=''; toast(newPin?'설정과 새 비밀번호를 저장했어요':'설정을 저장했어요'); }catch(e){ toast(e.code==='auth/requires-recent-login'?'비밀번호 변경은 로그아웃 후 다시 입장해서 해 주세요':'저장 실패: '+e.message); }
 };
 $('#copyCsv').onclick = async()=>{
   const q = s => `"${String(s??'').replace(/"/g,'""')}"`;
